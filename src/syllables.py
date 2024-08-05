@@ -207,6 +207,7 @@ class SyllableSplitterNucleus(SyllableSplitterBase):
         # Checando por vogais no fim de palavra.
         if index + 1 == wordlen:
             syllable.nucleus = word[index]
+            syllable.has_nucleus = True
             return SyllableSplitterCoda(**vars(self)).run(word, index + 1, syllable)
 
 
