@@ -50,6 +50,13 @@ class TestWordsWithCoda(TestCase):
         self.assertListEqual(['p', 'e', 's'], word.syllables[0].parts())
         self.assertListEqual(['c', 'a', 'r'], word.syllables[1].parts())
 
+        text = 'consigo'
+        word = splitter.run(text)
+        self.assertEqual(3, len(word.syllables))
+        self.assertListEqual(['c', 'o', 'n'], word.syllables[0].parts())
+        self.assertListEqual(['s', 'i',  ''], word.syllables[1].parts())
+        self.assertListEqual(['g', 'o',  ''], word.syllables[2].parts())
+
 
 
 
