@@ -30,11 +30,9 @@ DIGRAPHS_SOMETIMES_2 = ('gu')
 DIGRAPHS_PREVENT     = ('a', 'á', 'â', 'ã', 'o', 'ó', 'ô', 'õ', 'u', 'ú')
 CODA_MIDDLE          = ('l', 'm', 'n', 'r', 's', 'x', 'z')
 CODA_END             = ('h', 'l', 'm', 'n', 'r', 's', 'x', 'z')
-
-CODA_CLUSTER_MIDDLE = ('ns')
-CODA_CLUSTER_END    = ('ns', 'ps')
-
-SPECIAL_SYMBOLS     = ("'", '’')
+CODA_CLUSTER_MIDDLE  = ('ns')
+CODA_CLUSTER_END     = ('ns', 'ps')
+SPECIAL_SYMBOLS      = ("'", '’')
 
 
 @dataclass
@@ -139,7 +137,7 @@ class SyllableSplitterOnset(SyllableSplitterBase):
             if word[index:index + 2] in DIGRAPHS_ALWAYS:
                 syllable.onset += word[index:index + 2]
                 syllable.has_onset = True
-                syllable.has_diphthong = True
+                syllable.has_onset_digraph = True
                 return SyllableSplitterOnset(**vars(self)).run(word, index + 2, syllable)
 
             # Sequências que são dígrafo às vezes. Não influencia no ataque,
@@ -283,16 +281,18 @@ class SyllableSplitterCoda(SyllableSplitterBase):
     def run(self, word: str, index: int, syllable: Syllable) -> tuple[Syllable, int]:
         wordlen  = len(word)
 
-        # Checando por final de palavra.
+        # Checando por índice depois do final da palavra, ou seja, não tem coda.
         if index == wordlen:
             return SyllableSplitterEnd(**vars(self)).run(word, index, syllable)
 
+        # Checando por coda simples no final da palavra.
         if index + 1 == wordlen:
             if word[index] in CODA_END:
                 syllable.coda = word[index]
                 syllable.has_coda = True
                 return SyllableSplitterEnd(**vars(self)).run(word, index + 1, syllable)
 
+        # Checando por encontro consonantal no final da palavra.
         if index + 2 == wordlen:
             if word[index:index + 2] in CODA_CLUSTER_END:
                 syllable.coda = word[index:index + 2]
@@ -300,12 +300,14 @@ class SyllableSplitterCoda(SyllableSplitterBase):
                 syllable.has_code_cluster = True
                 return SyllableSplitterEnd(**vars(self)).run(word, index + 2, syllable)
 
-        if index + 2 <= wordlen:
+        # Checando por encontro consonantal no meio da palavra.
+        if index + 3 < wordlen:
             if word[index:index + 2] in CODA_CLUSTER_MIDDLE:
-                syllable.coda = word[index:index + 2]
-                syllable.has_coda = True
-                syllable.has_code_cluster = True
-                return SyllableSplitterEnd(**vars(self)).run(word, index + 2, syllable)
+                if word[index + 2] in CONSONANTS:
+                    syllable.coda = word[index:index + 2]
+                    syllable.has_coda = True
+                    syllable.has_code_cluster = True
+                    return SyllableSplitterEnd(**vars(self)).run(word, index + 2, syllable)
 
         if word[index:index + 2] in DIGRAPHS_ALWAYS:
             return SyllableSplitterEnd(**vars(self)).run(word, index, syllable)
@@ -325,7 +327,6 @@ class SyllableSplitterCoda(SyllableSplitterBase):
             return SyllableSplitterEnd(**vars(self)).run(word, index + 1, syllable)
 
 
-        # if index + 2 < wordlen:
         if word[index] in CODA_MIDDLE:
             if word[index + 1] in CONSONANTS:
                 syllable.coda = word[index]
