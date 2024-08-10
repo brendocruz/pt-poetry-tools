@@ -1,10 +1,12 @@
 from unittest import TestCase
-from src.words import WordSplitter
-from src.stress import StressFinder
+from src.words.splitter import WordSplitter
+from src.stress.finder import StressFinder
+from src.syllables.flags import STRESS
 
 
 
 class TestWordsWithOnset(TestCase):
+
     def test_proparoxytones_accent(self):
         finder = StressFinder()
         splitter = WordSplitter()
@@ -12,17 +14,17 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('matemática')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('abóbora')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('átomo')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
 
@@ -34,12 +36,12 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('amável')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('dócil')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
 
@@ -51,12 +53,12 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('bebê')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('português')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
     def test_paroxytones_no_accent(self):
@@ -66,22 +68,22 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('gato')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('prolixo')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('talarico')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('dissimulado')
         index = finder.run(word)
         self.assertEqual(3, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
     def test_oxytones_no_accent(self):
@@ -91,67 +93,67 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('hostil')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('amar')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('talismã')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('irmãs')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('gratidão')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('anciãos')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('jejum')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('incomuns')
         index = finder.run(word)
         self.assertEqual(2, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('tatus')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('abacaxi')
         index = finder.run(word)
         self.assertEqual(3, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('caquis')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('farei')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('podeis')
         index = finder.run(word)
         self.assertEqual(1, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
 
@@ -163,22 +165,22 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('só')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('pé')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('dê')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('lá')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
 
@@ -190,27 +192,27 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('te')
         index = finder.run(word)
         self.assertEqual(-1, index)
-        self.assertFalse(word.syllables[index].is_stressed)
+        self.assertFalse(word.syllables[index].has(STRESS))
 
         word = splitter.run('a')
         index = finder.run(word)
         self.assertEqual(-1, index)
-        self.assertFalse(word.syllables[index].is_stressed)
+        self.assertFalse(word.syllables[index].has(STRESS))
 
         word = splitter.run('o')
         index = finder.run(word)
         self.assertEqual(-1, index)
-        self.assertFalse(word.syllables[index].is_stressed)
+        self.assertFalse(word.syllables[index].has(STRESS))
 
         word = splitter.run('sem')
         index = finder.run(word)
         self.assertEqual(-1, index)
-        self.assertFalse(word.syllables[index].is_stressed)
+        self.assertFalse(word.syllables[index].has(STRESS))
 
         word = splitter.run('com')
         index = finder.run(word)
         self.assertEqual(-1, index)
-        self.assertFalse(word.syllables[index].is_stressed)
+        self.assertFalse(word.syllables[index].has(STRESS))
 
 
     def test_monosyllable_stressed_no_accent(self):
@@ -220,11 +222,51 @@ class TestWordsWithOnset(TestCase):
         word = splitter.run('ver')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
         word = splitter.run('mão')
         index = finder.run(word)
         self.assertEqual(0, index)
-        self.assertTrue(word.syllables[index].is_stressed)
+        self.assertTrue(word.syllables[index].has(STRESS))
 
 
+
+    
+    def test_word_without_nucleus(self):
+        finder = StressFinder()
+        splitter = WordSplitter(split_onset_cluster=True)
+
+        # Sem núcleo antes de paroxítona.
+        text = 'ritmo'
+        word = splitter.run(text)
+        index = finder.run(word)
+        self.assertEqual(index, 0)
+        self.assertTrue(word.syllables[index].has(STRESS))
+
+        # Sem núcleo antes de proparoxítona.
+        text = 'núpcias'
+        word = splitter.run(text)
+        index = finder.run(word)
+        self.assertEqual(index, 0)
+        self.assertTrue(word.syllables[index].has(STRESS))
+
+        # Sem núcleo depois de oxítona.
+        text = 'friccionar'
+        word = splitter.run(text)
+        index = finder.run(word)
+        self.assertEqual(index, 4)
+        self.assertTrue(word.syllables[index].has(STRESS))
+
+        # Sem núcleo depois de paroxítona.
+        text = 'advogado'
+        word = splitter.run(text)
+        index = finder.run(word)
+        self.assertEqual(index, 3)
+        self.assertTrue(word.syllables[index].has(STRESS))
+
+        # Sem núcleo depois de proparoxítona.
+        text = 'mnemônico'
+        word = splitter.run(text)
+        index = finder.run(word)
+        self.assertEqual(index, 2)
+        self.assertTrue(word.syllables[index].has(STRESS))

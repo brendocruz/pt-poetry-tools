@@ -4,6 +4,7 @@ VIRTUAL_ENVIRONMENT = .venv
 ACTIVATE_SCRIPT     = $(VIRTUAL_ENVIRONMENT)/bin/activate
 REQUIREMENTS_FILE   = requirements.txt
 
+TARGET ?= tests
 
 setup:
 	@python3 -m venv $(VIRTUAL_ENVIRONMENT)
@@ -28,15 +29,15 @@ freeze:
 
 test:
 	@source $(ACTIVATE_SCRIPT) && \
-		python3 -m pytest tests -vvl
+		python3 -m pytest $(TARGET) -vvl
 
 debug:
 	@source $(ACTIVATE_SCRIPT) && \
-		python3 -m pytest tests --pdb --maxfail=1
+		python3 -m pytest $(TARGET) --pdb --maxfail=1
 
 coverage:
 	@source $(ACTIVATE_SCRIPT) && \
-		coverage run -m pytest tests
+		coverage run -m pytest $(TARGET)
 
 report:
 	@source $(ACTIVATE_SCRIPT) && \
