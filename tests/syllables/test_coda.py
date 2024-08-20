@@ -1,6 +1,6 @@
 from unittest import TestCase
-from src.words.splitter import WordSplitter
 from src.syllables.flags import *
+from src.words.splitter import WordSplitter
 
 
 

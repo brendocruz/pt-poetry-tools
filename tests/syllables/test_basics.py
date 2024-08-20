@@ -126,3 +126,43 @@ class TestBasicWords(TestCase):
         word = splitter.run(text)
         self.assertEqual(1,    len(word.syllables))
         self.assertListEqual(['', '', 'é', ''], word.syllables[0].parts())
+
+
+
+    def test_word_with_hyphen(self):
+        splitter = WordSplitter()
+
+        text_1 = 'água-viva'
+        word_1 = splitter.run(text_1)
+        self.assertEqual(4,    len(word_1.syllables))
+        self.assertListEqual(['',  '',   'á', ''], word_1.syllables[0].parts())
+        self.assertListEqual(['',  'gu', 'a', ''], word_1.syllables[1].parts())
+        self.assertListEqual(['-', 'v',  'i', ''], word_1.syllables[2].parts())
+        self.assertListEqual(['',  'v',  'a', ''], word_1.syllables[3].parts())
+        self.assertEqual(word_1.syllables[0].props, NUCLEUS)
+        self.assertEqual(word_1.syllables[1].props, ONSET | NUCLEUS | ONSET_DIGRAPH)
+        self.assertEqual(word_1.syllables[2].props, ONSET | NUCLEUS)
+        self.assertEqual(word_1.syllables[3].props, ONSET | NUCLEUS)
+
+        text_2 = 'águas-vivas'
+        word_2 = splitter.run(text_2)
+        self.assertEqual(4,    len(word_2.syllables))
+        self.assertListEqual(['',  '',   'á',  ''], word_2.syllables[0].parts())
+        self.assertListEqual(['',  'gu', 'a', 's'], word_2.syllables[1].parts())
+        self.assertListEqual(['-', 'v',  'i',  ''], word_2.syllables[2].parts())
+        self.assertListEqual(['',  'v',  'a', 's'], word_2.syllables[3].parts())
+        self.assertEqual(word_2.syllables[0].props, NUCLEUS)
+        self.assertEqual(word_2.syllables[1].props, ONSET | NUCLEUS | CODA | ONSET_DIGRAPH)
+        self.assertEqual(word_2.syllables[2].props, ONSET | NUCLEUS)
+        self.assertEqual(word_2.syllables[3].props, ONSET | NUCLEUS | CODA)
+
+        text_3 = 'trens-bala'
+        word_3 = splitter.run(text_3)
+        self.assertEqual(3,    len(word_3.syllables))
+        self.assertListEqual(['',  'tr', 'e', 'ns'], word_3.syllables[0].parts())
+        self.assertListEqual(['-', 'b',  'a',   ''], word_3.syllables[1].parts())
+        self.assertListEqual(['',  'l',  'a',   ''], word_3.syllables[2].parts())
+        self.assertEqual(word_3.syllables[0].props,
+                         ONSET | NUCLEUS | CODA | ONSET_CLUSTER | CODA_CLUSTER)
+        self.assertEqual(word_3.syllables[1].props, ONSET | NUCLEUS)
+        self.assertEqual(word_3.syllables[2].props, ONSET | NUCLEUS)
