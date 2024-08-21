@@ -13,17 +13,28 @@ from src.verses.errors import ParseError
 from src.words.splitter import WordSplitter
 from src.stress.finder import StressFinder
 
-help_verse = 'O verso que será metrificado.'
-help_help  = 'Mostra essa mensagem e sai.'
+help_verse  = 'O verso que será metrificado.'
+help_help   = 'Mostra essa mensagem e sai.'
+help_noline = 'Não insere o caractere de nova linha no final da saída.'
 
 argparser = argparse.ArgumentParser(description='', add_help=False)
 argparser.add_argument('verse', type=str, help=help_verse)
+argparser.add_argument('-N', '--noline', action='store_true', help=help_noline)
 argparser.add_argument('-h', '--help', action='help', help=help_help)
 
 
+
+def print_output(output: str, noline: bool):
+    if noline:
+        print(output, end="")
+    else:
+        print(output)
+
+
 def main():
-    args      = argparser.parse_args()
-    text: str = args.verse
+    args         = argparser.parse_args()
+    text: str    = args.verse
+    noline: bool = args.noline
 
     scanner   = VerseScanner(text)
     parser    = VerseParser(scanner)
@@ -39,14 +50,19 @@ def main():
         chars = list(text)
         chars.insert(index, '*')
         text  = ''.join(chars)
-        print(text)
+        print_output(text, noline)
         exit(1)
     except:
-        print(text)
+        print_output(text, noline)
         exit(2)
 
-    output = generator.run(verse)
-    print(output)
+    output: str = ''
+    try:
+        output = generator.run(verse)
+    except:
+        print_output(f'{text}**', noline)
+
+    print_output(output, noline)
 
 
 if __name__ == '__main__':
