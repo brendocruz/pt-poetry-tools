@@ -6,6 +6,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), './../
 from src.verses.scanner import VerseScanner
 from src.verses.parser import VerseParser
 from src.verses.generator import VerseGenerator
+from src.verses.nodes import Verse
+from src.verses.errors import ParseError
 from src.words.splitter import WordSplitter
 from src.stress.finder import StressFinder
 
@@ -18,15 +20,30 @@ argparser.add_argument('-h', '--help', action='help', help=help_help)
 
 
 def main():
-    args = argparser.parse_args()
+    args      = argparser.parse_args()
+    text: str = args.verse
 
-    scanner   = VerseScanner(args.verse)
+    scanner   = VerseScanner(text)
     parser    = VerseParser(scanner)
     splitter  = WordSplitter()
     finder    = StressFinder()
     generator = VerseGenerator(splitter, finder)
-    verse     = parser.parse()
-    output    = generator.run(verse)
+
+    verse: Verse
+    try:
+        verse = parser.parse()
+    except ParseError as error:
+        index = error.index
+        chars = list(text)
+        chars.insert(index, '*')
+        text  = ''.join(chars)
+        print(text)
+        exit(1)
+    except:
+        print(text)
+        exit(2)
+
+    output = generator.run(verse)
     print(output)
 
 
