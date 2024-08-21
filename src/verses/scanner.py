@@ -101,5 +101,4 @@ class VerseScanner(ReprMixin):
         if self.is_whitespace(char):
             self.scan_whitespace()
             return self.pop_token()
-        message = f'Not supported character `{char}`'
-        raise ScanError(self.index, message)
+        return self.pop_token()

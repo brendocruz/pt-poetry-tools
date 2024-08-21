@@ -253,8 +253,24 @@ class TestScanner(TestCase):
 
 
     def test_not_supported_character(self):
-        text = '1'
+        text = 'tenho 1 gato, e você?'
         scanner = VerseScanner(text)
 
-        with self.assertRaises(ScanError):
-            scanner.pop_token()
+        token_A = scanner.pop_token()
+        self.assertEqual(token_A.kind, TokenKind.STRING)
+        self.assertEqual(token_A.value, 'tenho')
+
+        token_B = scanner.pop_token()
+        self.assertEqual(token_B.kind, TokenKind.STRING)
+        self.assertEqual(token_B.value, 'gato')
+
+        token_C = scanner.pop_token()
+        self.assertEqual(token_C.kind, TokenKind.STRING)
+        self.assertEqual(token_C.value, 'e')
+
+        token_D = scanner.pop_token()
+        self.assertEqual(token_D.kind, TokenKind.STRING)
+        self.assertEqual(token_D.value, 'você')
+
+        token_E = scanner.pop_token()
+        self.assertEqual(token_E.kind, TokenKind.EOF)
