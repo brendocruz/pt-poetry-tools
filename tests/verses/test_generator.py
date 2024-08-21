@@ -18,7 +18,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'ver|+me|lho|a|+zul|+ver|--de')
+        self.assertEqual(output, '|ver|+me|lho|a|+zul|+ver|--de|')
 
 
 
@@ -32,7 +32,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '+saú|--de')
+        self.assertEqual(output, '|+saú|--de|')
 
 
 
@@ -46,7 +46,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '+o|--ito')
+        self.assertEqual(output, '|+o|--ito|')
 
 
 
@@ -60,7 +60,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'ver|+me|--lho')
+        self.assertEqual(output, '|ver|+me|--lho|')
 
 
 
@@ -74,7 +74,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'poe|+sia')
+        self.assertEqual(output, '|poe|+sia|')
 
 
 
@@ -88,7 +88,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'ca|u|+so|--u')
+        self.assertEqual(output, '|ca|u|+so|--u|')
 
 
 
@@ -102,7 +102,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'proi|+bi|u|+tu|--do')
+        self.assertEqual(output, '|proi|+bi|u|+tu|--do|')
 
 
 
@@ -116,7 +116,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '+á|u|reo|+di|--a')
+        self.assertEqual(output, '|+á|u|reo|+di|--a|')
 
 
 
@@ -130,7 +130,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'a|ma|+re|--lo')
+        self.assertEqual(output, '|a|ma|+re|--lo|')
 
 
 
@@ -144,7 +144,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '+a|+ma|+re|+lo')
+        self.assertEqual(output, '|+a|+ma|+re|+lo|')
 
 
 
@@ -158,7 +158,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'a|ma|re|lo')
+        self.assertEqual(output, '|a|ma|re|lo|')
 
 
 
@@ -172,7 +172,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '+a|ma|+re|--lo')
+        self.assertEqual(output, '|+a|ma|+re|--lo|')
 
 
     def test_fragment_word_join(self):
@@ -185,7 +185,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, 'ca|sa_a|zul')
+        self.assertEqual(output, '|ca|sa_a|zul|')
 
 
 
@@ -199,5 +199,5 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        desired   = '+tris|te|+di_a|meu|+ga|to|+cin|za|es|+tá|mo|no|si|+lá|--bico'
+        desired   = '|+tris|te|+di_a|meu|+ga|to|+cin|za|es|+tá|mo|no|si|+lá|--bico|'
         self.assertEqual(desired, output)

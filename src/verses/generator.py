@@ -323,5 +323,5 @@ class VerseGenerator:
             output_verse.append(output_rest_text)
 
 
-        output_verse_text = '|'.join(output_verse)
+        output_verse_text = f'|{'|'.join(output_verse)}|'
         return output_verse_text
