@@ -18,7 +18,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '|ver|+me|lho|a|+zul|+ver|--de|')
+        self.assertEqual(output, '|ver|+me|lho_a|+zul|+ver|--de|')
 
 
 
@@ -199,5 +199,20 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        desired   = '|+tris|te|+di_a|meu|+ga|to|+cin|za|es|+tá|mo|no|si|+lá|--bico|'
+        desired   = '|+tris|te|+di_a|meu|+ga|to|+cin|za_es|+tá|mo|no|si|+lá|--bico|'
+        self.assertEqual(desired, output)
+
+
+
+    def test_merge_syllables_diphthongs(self):
+        text      = 'sei o seu segredo'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+sei|o|+seu|se|+gre|--do|'
         self.assertEqual(desired, output)

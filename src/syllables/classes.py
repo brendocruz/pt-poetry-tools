@@ -65,6 +65,7 @@ class PoeticSyllable:
     prefix_coda:  Optional[Syllable] = None
     sources:          list[Syllable] = field(default_factory=list)
     stress:                     bool = False
+    mergeable:                  bool = True
 
 
 

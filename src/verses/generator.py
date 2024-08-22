@@ -5,7 +5,7 @@ from src.words.classes import Word
 from src.syllables.classes import PoeticSyllable, Syllable
 from src.words.splitter import WordSplitter
 from src.stress.finder import StressFinder
-from src.syllables.flags import STRESS
+from src.syllables.flags import STRESS, DIPHTHONG
 
 
 class VerseGenerator:
@@ -18,8 +18,8 @@ class VerseGenerator:
 
 
 
-    def generate_untied_pieces(self, pieces: PiecesUntied) -> list[Syllable]:
-        assert len(pieces.children) == 2
+    def generate_untied_pieces(self, pieces: PiecesUntied) -> tuple[list[Syllable], list[Syllable]]:
+        nomergeable: list[Syllable] = []
 
         all_syllables: list[list[Syllable]] = []
         for child in pieces.children:
@@ -28,26 +28,31 @@ class VerseGenerator:
                 all_syllables.append(syllables)
                 continue
             if isinstance(child, PiecesTied):
-                syllables = self.generate_tied_pieces(child)
+                syllables, nomergeable_2 = self.generate_tied_pieces(child)
+                nomergeable.extend(nomergeable_2)
                 all_syllables.append(syllables)
                 continue
             if isinstance(child, PiecesUntied):
-                syllables = self.generate_untied_pieces(child)
+                syllables, nomergeable_2 = self.generate_untied_pieces(child)
+                nomergeable.extend(nomergeable_2)
                 all_syllables.append(syllables)
                 continue
 
         left_piece  = all_syllables[0]
         right_piece = all_syllables[1]
 
+        nomergeable.append(left_piece[-1])
+        nomergeable.append(right_piece[0])
+
         joined_pieces: list[Syllable] = []
         joined_pieces.extend(left_piece)
         joined_pieces.extend(right_piece)
-        return joined_pieces
+        return joined_pieces, nomergeable
 
 
 
-    def generate_tied_pieces(self, pieces: PiecesTied) -> list[Syllable]:
-        assert len(pieces.children) == 2
+    def generate_tied_pieces(self, pieces: PiecesTied) -> tuple[list[Syllable], list[Syllable]]:
+        nomergeable: list[Syllable] = []
 
         all_syllables: list[list[Syllable]] = []
         for child in pieces.children:
@@ -56,11 +61,13 @@ class VerseGenerator:
                 all_syllables.append(syllables)
                 continue
             if isinstance(child, PiecesTied):
-                syllables = self.generate_tied_pieces(child)
+                syllables, nomergeable_2 = self.generate_tied_pieces(child)
+                nomergeable.extend(nomergeable_2)
                 all_syllables.append(syllables)
                 continue
             if isinstance(child, PiecesUntied):
-                syllables = self.generate_untied_pieces(child)
+                syllables, nomergeable_2 = self.generate_untied_pieces(child)
+                nomergeable.extend(nomergeable_2)
                 all_syllables.append(syllables)
                 continue
 
@@ -77,23 +84,24 @@ class VerseGenerator:
             joined_pieces.append(left_edge)
             joined_pieces.append(right_edge)
             joined_pieces.extend(right_piece)
-            return joined_pieces
+            return joined_pieces, nomergeable
 
         joined_pieces: list[Syllable] = []
         joined_pieces.extend(left_piece)
         joined_pieces.append(merged_syllable)
         joined_pieces.extend(right_piece)
-        return joined_pieces
+        return joined_pieces, nomergeable
 
 
 
     def generate_auto_word(self, auto_word: Phrase) -> list[PoeticSyllable]:
         all_syllables: list[Syllable] = []
+        nomergeable: list[Syllable] = []
 
         if isinstance(auto_word, PiecesTied):
-            all_syllables = self.generate_tied_pieces(auto_word)
+            all_syllables, nomergeable = self.generate_tied_pieces(auto_word)
         elif isinstance(auto_word, PiecesUntied):
-            all_syllables = self.generate_untied_pieces(auto_word)
+            all_syllables, nomergeable = self.generate_untied_pieces(auto_word)
 
 
         merged_word  = Word(all_syllables)
@@ -114,6 +122,8 @@ class VerseGenerator:
         poetic_syllables: list[PoeticSyllable] = []
         for syllable in merged_word.syllables:
             poetic_syllable = PoeticSyllable(sources=[syllable])
+            if syllable in nomergeable:
+                poetic_syllable.mergeable = False
             poetic_syllables.append(poetic_syllable)
         return poetic_syllables
 
@@ -296,25 +306,104 @@ class VerseGenerator:
         return all_syllables
 
 
+    
+    def merge_syllables(self, syllables: list[PoeticSyllable], start: int, end: int) -> list[PoeticSyllable]:
+        # Une duas sílbas se a primeira não tiver coda, a segunda não tiver 
+        # ataque, nenhum tiver ditongo e ambas não forem tônicas.
+        index = start
+        merged_syllables: list[PoeticSyllable] = []
+
+        # for syllable in syllables[:start]:
+        #     merged_syllables.append(syllable)
+
+        while index < end - 1:
+            left_syllable = syllables[index]
+            right_syllable = syllables[index + 1]
+
+            if left_syllable.stress and right_syllable.stress:
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if not left_syllable.mergeable:
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+
+            if not right_syllable.mergeable:
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if left_syllable.has_coda():
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if right_syllable.has_onset():
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if len(left_syllable.sources) > 1:
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if len(right_syllable.sources) > 1:
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if left_syllable.sources[0].has(DIPHTHONG):
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            if right_syllable.sources[0].has(DIPHTHONG):
+                merged_syllables.append(left_syllable)
+                index += 1
+                continue
+
+            left_syllable.extend(right_syllable)
+            merged_syllables.append(left_syllable)
+            index += 2
+
+        if end < 1:
+            end = 1
+
+        for syllable in syllables[end - 1:]:
+            merged_syllables.append(syllable)
+
+        return merged_syllables
+
+
+    def get_last_stress(self, syllables: list[PoeticSyllable]) -> int:
+        num_syllables = len(syllables)
+        last_stress = num_syllables - 1
+        for index in reversed(range(num_syllables)):
+            if syllables[index].stress:
+                last_stress = index
+                break
+        return last_stress
+
+
 
     def run(self, verse: Verse) -> str:
         poetic_syllables = self.generate_verse(verse)
+        last_stress = self.get_last_stress(poetic_syllables)
 
-
-        num_syllables = len(poetic_syllables)
-        last_stress = num_syllables - 1
-        for index in reversed(range(num_syllables)):
-            if poetic_syllables[index].stress:
-                last_stress = index
-                break
+        merged_syllables = self.merge_syllables(poetic_syllables, 0, last_stress)
+        last_stress = self.get_last_stress(merged_syllables)
 
         output_verse: list[str] = []
-        for poetic_syllable in poetic_syllables[0:last_stress + 1]:
+        for poetic_syllable in merged_syllables[0:last_stress + 1]:
             text = poetic_syllable.text(delim='_', stress_prefix='+')
             output_verse.append(text)
 
         output_rest: list[str] = []
-        for poetic_syllable in poetic_syllables[last_stress + 1:]:
+        for poetic_syllable in merged_syllables[last_stress + 1:]:
             text = poetic_syllable.text(delim='')
             output_rest.append(text)
 

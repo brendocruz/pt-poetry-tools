@@ -163,7 +163,7 @@ class SyllableSplitter:
         if word[index:index + 2] in DIPHTHONG_POSSIBLY:
             if self.is_diphthong(word, index):
                 syllable.nucleus = word[index:index + 2]
-                syllable.set_props(f.NUCLEUS)
+                syllable.set_props(f.NUCLEUS, f.DIPHTHONG)
                 return self.split_coda(word, index + 2, syllable)
             # else:
             #     syllable.nucleus = word[index]

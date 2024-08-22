@@ -36,6 +36,8 @@ def main():
     text: str    = args.verse
     noline: bool = args.noline
 
+    text      = text.lower().strip()
+
     scanner   = VerseScanner(text)
     parser    = VerseParser(scanner)
     splitter  = WordSplitter()
