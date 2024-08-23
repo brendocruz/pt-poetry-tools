@@ -204,7 +204,7 @@ class TestVerseGenerator(TestCase):
 
 
 
-    def test_merge_syllables_diphthong_hiato(self):
+    def test_merge_syllables_dipthong_hiatus(self):
         text      = 'sei o seu segredo'
         splitter  = WordSplitter()
         finder    = StressFinder()
@@ -218,7 +218,7 @@ class TestVerseGenerator(TestCase):
         self.assertEqual(desired, output)
 
 
-    def test_merge_syllables_hiato_diphthong(self):
+    def test_merge_syllables_hiatus_diphthong(self):
         text      = 'estreou o vestido novo'
         splitter  = WordSplitter()
         finder    = StressFinder()
@@ -243,4 +243,78 @@ class TestVerseGenerator(TestCase):
         output    = generator.run(verse)
 
         desired   = '|+mei_o|a|+mei|--o|'
+        self.assertEqual(desired, output)
+
+
+    def test_merge_syllables_right_before_end(self):
+        text      = 'ele me amou'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+e|le|me_a|+mou|'
+        self.assertEqual(desired, output)
+
+
+
+    def test_merge_syllables_prefix_simple(self):
+        text      = 'mais um dia'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+mai|s_um|+di|--a|'
+        self.assertEqual(desired, output)
+
+
+
+    def test_merge_syllables_coda_prefix_complex(self):
+        text      = 'tens o amor'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+ten|s_o_a|+mor|'
+        self.assertEqual(desired, output)
+
+
+
+    def test_parse_coda_prefix_simple(self):
+        text      = '|+mai|s_um|+di|--a|'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+mai|s_um|+di|--a|'
+        self.assertEqual(desired, output)
+
+
+
+    def test_parse_coda_prefix_complex(self):
+        text      = '|+ten|s_o_a|+mor|'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+ten|s_o_a|+mor|'
         self.assertEqual(desired, output)

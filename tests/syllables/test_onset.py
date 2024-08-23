@@ -379,6 +379,16 @@ class TestWordsWithOnset(TestCase):
 
 
 
+    def test_only_onset(self):
+        splitter = WordSplitter()
+
+        text = 's'
+        word = splitter.run(text)
+        self.assertEqual(1, len(word.syllables))
+        self.assertListEqual(['', 's',   '',  ''], word.syllables[0].parts())
+
+
+
     def test_special_symbol(self):
         splitter = WordSplitter()
 

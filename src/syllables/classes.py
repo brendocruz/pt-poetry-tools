@@ -81,10 +81,10 @@ class Syllable:
 
 @dataclass
 class PoeticSyllable:
-    prefix_coda:  Optional[Syllable] = None
-    sources:          list[Syllable] = field(default_factory=list)
-    stress:                     bool = False
-    mergeable:                  bool = True
+    prefix:     Optional[str] = None
+    sources:   list[Syllable] = field(default_factory=list)
+    stress:              bool = False
+    mergeable:           bool = True
 
 
 
@@ -96,7 +96,7 @@ class PoeticSyllable:
 
 
     def is_empty(self) -> bool:
-        if self.prefix_coda:
+        if self.prefix:
             return False
         if self.sources:
             return False
@@ -106,8 +106,8 @@ class PoeticSyllable:
 
     def text(self, delim: str, stress_prefix: str = '') -> str:
         source_text: list[str] = []
-        if self.prefix_coda:
-            source_text.append(self.prefix_coda.coda)
+        if self.prefix:
+            source_text.append(self.prefix)
 
         for syllable in self.sources:
             source_text.append(syllable.text())
@@ -121,7 +121,7 @@ class PoeticSyllable:
 
     
     def has_onset(self) -> bool:
-        if self.prefix_coda:
+        if self.prefix:
             return True
         if not self.sources:
             return False
@@ -136,8 +136,21 @@ class PoeticSyllable:
 
 
 
-    def add_prefix(self, syllable):
-        self.prefix_coda = syllable
+    def add_prefix(self, other: 'PoeticSyllable') -> None:
+        target = other.sources[-1]
+        codalen = len(target.coda)
+
+        if codalen == 1:
+            self.prefix = target.coda
+            target.coda = ''
+            return
+        if codalen > 1:
+            coda = target.coda
+            new_onset = coda[-1]
+            new_coda  = coda[:-1]
+            self.prefix = new_onset
+            target.coda = new_coda
+            return
 
 
     

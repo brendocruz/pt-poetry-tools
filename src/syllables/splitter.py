@@ -28,6 +28,10 @@ class SyllableSplitter:
         # composta de consoantes e apóstrofos, sendo ela terminada por vogal.
 
 
+        if index >= wordlen:
+            return self.split_end(word, index, syllable)
+
+
         # Checando por apóstrofos. 
         if word[index] in SPECIAL_SYMBOLS:
             syllable.onset += word[index]
@@ -97,6 +101,7 @@ class SyllableSplitter:
     def split_nucleus(self, word: str, index: int, syllable: Syllable) -> tuple[Syllable, int]:
         wordlen  = len(word)
 
+
         # Checando por vogais no fim de palavra.
         if index + 1 == wordlen:
             syllable.nucleus = word[index]
@@ -150,6 +155,8 @@ class SyllableSplitter:
                 syllable.nucleus = word[index]
                 return self.split_coda(word, index + 1, syllable)
 
+        return self.split_coda(word, index, syllable)
+
 
 
 
@@ -157,7 +164,7 @@ class SyllableSplitter:
         wordlen  = len(word)
 
         # Checando por índice depois do final da palavra, ou seja, não tem coda.
-        if index == wordlen:
+        if index >= wordlen:
             return self.split_end(word, index, syllable)
 
         # Checando por coda simples no final da palavra.

@@ -5,6 +5,7 @@ from src.words.classes import Word
 from src.syllables.classes import PoeticSyllable, Syllable
 from src.words.splitter import WordSplitter
 from src.stress.finder import StressFinder
+from pprint import pprint
 
 
 class VerseGenerator:
@@ -307,7 +308,8 @@ class VerseGenerator:
 
 
     
-    def merge_syllables(self, syllables: list[PoeticSyllable], start: int, end: int) -> list[PoeticSyllable]:
+    def merge_syllables_hiatus(self, syllables: list[PoeticSyllable], 
+                               start: int, end: int) -> list[PoeticSyllable]:
         # Une duas sílbas se a primeira não tiver coda, a segunda não tiver 
         # ataque, nenhum tiver ditongo e ambas não forem tônicas.
         index = start
@@ -351,10 +353,10 @@ class VerseGenerator:
                 index += 1
                 continue
 
-            if len(right_syllable.sources) > 1:
-                merged_syllables.append(left_syllable)
-                index += 1
-                continue
+            # if len(right_syllable.sources) > 1:
+            #     merged_syllables.append(left_syllable)
+            #     index += 1
+            #     continue
 
             if left_syllable.sources[0].has_diphthong():
                 merged_syllables.append(left_syllable)
@@ -370,13 +372,34 @@ class VerseGenerator:
             merged_syllables.append(left_syllable)
             index += 2
 
-        if end < 1:
-            end = 1
+        # if end < 1:
+        #     end = 1
 
         for syllable in syllables[end - 1:]:
             merged_syllables.append(syllable)
 
         return merged_syllables
+
+
+
+    def merge_syllables_coda_prefix(self, syllables: list[PoeticSyllable], 
+                                    start: int, end: int) -> list[PoeticSyllable]:
+        index = start
+        while index < end - 1:
+            left_syllable = syllables[index]
+            right_syllable = syllables[index + 1]
+
+            if not left_syllable.has_coda():
+                index += 1
+                continue
+            if right_syllable.has_onset():
+                index += 1
+                continue
+
+            right_syllable.add_prefix(left_syllable)
+            index += 1
+        return syllables
+
 
 
     def get_last_stress(self, syllables: list[PoeticSyllable]) -> int:
@@ -390,22 +413,16 @@ class VerseGenerator:
 
 
 
-    def run(self, verse: Verse) -> str:
-        poetic_syllables = self.generate_verse(verse)
+    def generate_output(self, poetic_syllables: list[PoeticSyllable]) -> str:
         last_stress = self.get_last_stress(poetic_syllables)
 
-        merged_syllables = self.merge_syllables(poetic_syllables, 0, last_stress)
-        last_stress = self.get_last_stress(merged_syllables)
-
         output_verse: list[str] = []
-        for poetic_syllable in merged_syllables[0:last_stress + 1]:
+        for poetic_syllable in poetic_syllables[0:last_stress + 1]:
             text = poetic_syllable.text(delim='_', stress_prefix='+')
-            if poetic_syllable.text(delim='_') == 'saú':
-                breakpoint()
             output_verse.append(text)
 
         output_rest: list[str] = []
-        for poetic_syllable in merged_syllables[last_stress + 1:]:
+        for poetic_syllable in poetic_syllables[last_stress + 1:]:
             text = poetic_syllable.text(delim='')
             output_rest.append(text)
 
@@ -413,6 +430,18 @@ class VerseGenerator:
             output_rest_text = f'--{''.join(output_rest)}'
             output_verse.append(output_rest_text)
 
-
         output_verse_text = f'|{'|'.join(output_verse)}|'
+        return output_verse_text
+
+
+
+    def run(self, verse: Verse) -> str:
+        poetic_syllables = self.generate_verse(verse)
+
+        last_stress = self.get_last_stress(poetic_syllables)
+        merged_syllables = self.merge_syllables_hiatus(poetic_syllables, 0, last_stress + 1)
+
+        last_stress = self.get_last_stress(merged_syllables)
+        merged_syllables = self.merge_syllables_coda_prefix(merged_syllables, 0, last_stress + 1)
+        output_verse_text = self.generate_output(merged_syllables)
         return output_verse_text

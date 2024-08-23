@@ -13,8 +13,8 @@ class TestClassPoeticSyllable(TestCase):
 
     def test_is_empty_false(self):
         syllable = PoeticSyllable()
-        prefix_coda = Syllable(nucleus='a', coda='s')
-        syllable.prefix_coda = prefix_coda
+        prefix   = Syllable(nucleus='a', coda='s')
+        syllable.prefix = prefix.coda
         self.assertFalse(syllable.is_empty())
 
         syllable = PoeticSyllable()
@@ -31,7 +31,7 @@ class TestClassPoeticSyllable(TestCase):
         source_3 = Syllable(nucleus='a', coda='s')
 
         syllable = PoeticSyllable()
-        syllable.prefix_coda = prefix
+        syllable.prefix = prefix.coda
         syllable.sources.append(source_1)
         syllable.sources.append(source_2)
         syllable.sources.append(source_3)
@@ -62,7 +62,7 @@ class TestClassPoeticSyllable(TestCase):
         source_2 = Syllable(nucleus='a')
         source_3 = Syllable(nucleus='a', coda='s', stress=True)
         sources  = [source_1, source_2, source_3]
-        syllable = PoeticSyllable(sources=sources, prefix_coda=prefix)
+        syllable = PoeticSyllable(sources=sources, prefix=prefix.coda)
 
         text = syllable.text(delim='_', stress_prefix='+')
         self.assertEqual(text, '+s_a_a_as')
@@ -72,7 +72,7 @@ class TestClassPoeticSyllable(TestCase):
     def test_has_onset(self):
         syllable = PoeticSyllable()
         prefix   = Syllable(nucleus='o', coda='s')
-        syllable.prefix_coda = prefix
+        syllable.prefix = prefix.coda
         self.assertTrue(syllable.has_onset())
 
         syllable = PoeticSyllable()
@@ -95,14 +95,24 @@ class TestClassPoeticSyllable(TestCase):
         self.assertTrue(syllable.has_coda())
 
 
-    def test_add_prefix(self):
-        prefix   = Syllable(onset='d', nucleus='o', coda='s')
-        source_2 = Syllable(onset='',  nucleus='ou')
-        sources  = [source_2]
-        syllable = PoeticSyllable(sources=sources)
-        syllable.add_prefix(prefix)
-        self.assertEqual(syllable.prefix_coda, prefix)
+    def test_add_prefix_simple_coda(self):
+        source_1   = Syllable(onset='d', nucleus='o', coda='s')
+        source_2   = Syllable(onset='',  nucleus='ou')
+        syllable_1 = PoeticSyllable(sources=[source_1])
+        syllable_2 = PoeticSyllable(sources=[source_2])
+        syllable_2.add_prefix(syllable_1)
+        self.assertEqual(syllable_2.prefix, 's')
+        self.assertEqual(syllable_1.sources[-1].coda, '')
 
+
+    def test_add_prefix_complex_coda(self):
+        source_1   = Syllable(onset='t', nucleus='e', coda='ns')
+        source_2   = Syllable(onset='',  nucleus='o')
+        syllable_1 = PoeticSyllable(sources=[source_1])
+        syllable_2 = PoeticSyllable(sources=[source_2])
+        syllable_2.add_prefix(syllable_1)
+        self.assertEqual(syllable_2.prefix, 's')
+        self.assertEqual(syllable_1.sources[-1].coda, 'n')
 
 
     def test_append(self):

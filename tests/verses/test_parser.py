@@ -531,3 +531,46 @@ class TestParser(TestCase):
         self.assertEqual(len(child_A_2.children), 2)
         self.assertEqual(child_A_2.children[0], String('a'))
         self.assertEqual(child_A_2.children[1], String('zul'))
+
+
+
+    def test_prefix_coda(self):
+        input   = '|+mai|s_um|+di|--a|'
+        scanner = VerseScanner(input)
+        parser  = VerseParser(scanner)
+        verse   = parser.parse()
+
+        self.assertEqual(len(verse.children), 1)
+
+        child_A = verse.children[0]
+        self.assertIsInstance(child_A, FragmentWord)
+        self.assertEqual(len(child_A.children), 4)
+
+        child_A_1 = child_A.children[0]
+        self.assertIsInstance(child_A_1, FragmentStressed)
+        self.assertEqual(len(child_A_1.children), 1)
+
+        child_A_1_1 = child_A_1.children[0]
+        self.assertIsInstance(child_A_1_1, FragmentString)
+        self.assertEqual(len(child_A_1_1.children), 1)
+        self.assertEqual(child_A_1_1.children[0], String('mai'))
+
+        child_A_2 = child_A.children[1]
+        self.assertIsInstance(child_A_2, FragmentJoin)
+        self.assertEqual(len(child_A_2.children), 2)
+        self.assertEqual(child_A_2.children[0], String('s'))
+        self.assertEqual(child_A_2.children[1], String('um'))
+
+        child_A_3 = child_A.children[2]
+        self.assertIsInstance(child_A_3, FragmentStressed)
+        self.assertEqual(len(child_A_3.children), 1)
+
+        child_A_3_1 = child_A_3.children[0]
+        self.assertIsInstance(child_A_3_1, FragmentString)
+        self.assertEqual(len(child_A_3_1.children), 1)
+        self.assertEqual(child_A_3_1.children[0], String('di'))
+
+        child_A_4 = child_A.children[3]
+        self.assertIsInstance(child_A_4, FragmentRest)
+        self.assertEqual(len(child_A_4.children), 1)
+        self.assertEqual(child_A_4.children[0], String('a'))
