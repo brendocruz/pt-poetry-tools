@@ -147,37 +147,3 @@ class TestClassSyllable(TestCase):
         syllable.nucleus = 'a'
         syllable.coda    = 'n'
         self.assertEqual('pran', syllable.text())
-
-
-
-    # def test_repr(self):
-    #     syllable = Syllable(onset='s', nucleus='e', coda='r')
-    #     syllable.set_props(ONSET, NUCLEUS, CODA)
-    #     pattern = re.compile('^<.+>$')
-    #     self.assertNotRegex(repr(syllable), pattern)
-
-
-    def test_merge(self):
-        syllable_1 = Syllable(prefix='-', onset='m', nucleus='e', coda='')
-        syllable_2 = Syllable(prefix='',  onset='',  nucleus='u', coda='s')
-        syllable_3 = syllable_1.merge(syllable_2)
-
-        assert isinstance(syllable_3, Syllable)
-        self.assertEqual(syllable_3.text(), '-meus')
-        self.assertListEqual(syllable_3.parts(), ['-', 'm', 'eu', 's'])
-
-
-        syllable_1 = Syllable(prefix='',  onset='l', nucleus='o',  coda='')
-        syllable_2 = Syllable(prefix='-', onset='',  nucleus='ei', coda='')
-        syllable_3 = syllable_1.merge(syllable_2)
-        self.assertIsNone(syllable_3)
-
-        syllable_1 = Syllable(prefix='', onset='t', nucleus='o', coda='')
-        syllable_2 = Syllable(prefix='', onset='d', nucleus='e', coda='')
-        syllable_3 = syllable_1.merge(syllable_2)
-        self.assertIsNone(syllable_3)
-
-        syllable_1 = Syllable(prefix='', onset='t', nucleus='o', coda='s')
-        syllable_2 = Syllable(prefix='', onset='d', nucleus='e', coda='')
-        syllable_3 = syllable_1.merge(syllable_2)
-        self.assertIsNone(syllable_3)

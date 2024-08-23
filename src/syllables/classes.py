@@ -13,27 +13,6 @@ class Syllable:
     stress:  bool = False
 
 
-    def merge(self, other: 'Syllable') -> Optional['Syllable']:
-        if other.prefix != '':
-            return None
-
-        if self.coda != '':
-            return None
-
-        if other.onset != '':
-            return None
-
-        prefix  = self.prefix
-        onset   = self.onset
-        nucleus = self.nucleus + other.nucleus
-        coda    = other.coda
-
-        syllable = Syllable(prefix=prefix, onset=onset, nucleus=nucleus, coda=coda)
-        if self.has_stress() or other.has_stress():
-            syllable.stress = True
-        return syllable
-
-
     def text(self) -> str:
         return f'{self.prefix}{self.onset}{self.nucleus}{self.coda}'
 
