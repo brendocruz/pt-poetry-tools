@@ -1,6 +1,5 @@
 from unittest import TestCase
 from src.words.splitter import WordSplitter
-from src.syllables.flags import *
 
 
 
@@ -15,9 +14,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'a', ''], word.syllables[0].parts())
         self.assertListEqual(['', 'br', 'a', ''], word.syllables[1].parts())
         self.assertListEqual(['', 'ç',  'o', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[0].props, NUCLEUS)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'prato'
         word = splitter.run(text)
@@ -43,17 +39,12 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'tch', 'é', ''], word.syllables[0].parts())
         self.assertListEqual(['', 'qu',  'i', ''], word.syllables[1].parts())
         self.assertListEqual(['', '',    'a', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS | ONSET_DIGRAPH)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_DIGRAPH)
-        self.assertEqual(word.syllables[2].props, NUCLEUS)
 
         text = 'velho'
         word = splitter.run(text)
         self.assertEqual(2, len(word.syllables))
         self.assertListEqual(['', 'v',  'e', ''], word.syllables[0].parts())
         self.assertListEqual(['', 'lh', 'o', ''], word.syllables[1].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_DIGRAPH)
 
         text = 'chato'
         word = splitter.run(text)
@@ -133,10 +124,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'cc', 'i',  ''], word.syllables[1].parts())
         self.assertListEqual(['', '',   'o',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'n',  'a', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS | ONSET_CLUSTER)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
-        self.assertEqual(word.syllables[2].props, NUCLEUS)
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS | CODA)
 
         text = 'convicção'
         word = splitter.run(text)
@@ -144,8 +131,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'c',  'o',  'n'], word.syllables[0].parts())
         self.assertListEqual(['', 'v',  'i',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 'cç', 'ão',  ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[2].props, 
-                         ONSET | NUCLEUS | ONSET_CLUSTER | DIPHTHONG)
 
         text = 'compacto'
         word = splitter.run(text)
@@ -153,7 +138,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'c',  'o', 'm'], word.syllables[0].parts())
         self.assertListEqual(['', 'p',  'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'ct', 'o',  ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'núpcias'
         word = splitter.run(text)
@@ -161,7 +145,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'n',  'ú',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'pc', 'i',  ''], word.syllables[1].parts())
         self.assertListEqual(['', '',   'a', 's'], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'erupção'
         word = splitter.run(text)
@@ -169,8 +152,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'e',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'r',  'u',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'pç', 'ão', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[2].props, 
-                         ONSET | NUCLEUS | ONSET_CLUSTER | DIPHTHONG)
 
         text = 'eucalipto'
         word = splitter.run(text)
@@ -179,7 +160,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'c',  'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'l',  'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'pt', 'o',  ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'observar'
         word = splitter.run(text)
@@ -187,8 +167,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'o',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'bs', 'e', 'r'], word.syllables[1].parts())
         self.assertListEqual(['', 'v',  'a', 'r'], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, 
-                         ONSET | NUCLEUS | ONSET_CLUSTER | CODA)
 
         text = 'admitir'
         word = splitter.run(text)
@@ -196,7 +174,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'a',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'dm', 'i',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 't',  'i', 'r'], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'advogado'
         word = splitter.run(text)
@@ -205,14 +182,12 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'dv', 'o', ''], word.syllables[1].parts())
         self.assertListEqual(['', 'g',  'a', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'd',  'o', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'ritmo'
         word = splitter.run(text)
         self.assertEqual(2, len(word.syllables))
         self.assertListEqual(['', 'r',  'i', ''], word.syllables[0].parts())
         self.assertListEqual(['', 'tm', 'o', ''], word.syllables[1].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'ignorar'
         word = splitter.run(text)
@@ -220,7 +195,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'i',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'gn', 'o',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'r',  'a', 'r'], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'óbvio'
         word = splitter.run(text)
@@ -228,7 +202,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', '',   'ó', ''], word.syllables[0].parts())
         self.assertListEqual(['', 'bv', 'i', ''], word.syllables[1].parts())
         self.assertListEqual(['', '',   'o', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'psiquiatra'
         word = splitter.run(text)
@@ -237,7 +210,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'qu', 'i', ''], word.syllables[1].parts())
         self.assertListEqual(['', '',   'a', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'tr', 'a', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'submarino'
         word = splitter.run(text)
@@ -246,7 +218,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'bm', 'a', ''], word.syllables[1].parts())
         self.assertListEqual(['', 'r',  'i', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'n',  'o', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'tecnologia'
         word = splitter.run(text)
@@ -256,7 +227,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'l',  'o', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'g',  'i', ''], word.syllables[3].parts())
         self.assertListEqual(['', '',   'a', ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
         text = 'mnemônico'
         word = splitter.run(text)
@@ -265,7 +235,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'm',  'ô', ''], word.syllables[1].parts())
         self.assertListEqual(['', 'n',  'i', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'c',  'o', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS | ONSET_CLUSTER)
 
 
 
@@ -281,11 +250,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'c',  'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', '',   'o',  ''], word.syllables[3].parts())
         self.assertListEqual(['', 'n',  'a', 'r'], word.syllables[4].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS | ONSET_CLUSTER)
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[3].props, NUCLEUS)
-        self.assertEqual(word.syllables[4].props, ONSET | NUCLEUS | CODA)
 
         text = 'convicção'
         word = splitter.run(text)
@@ -294,8 +258,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'v',  'i',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 'c',  '',    ''], word.syllables[2].parts())
         self.assertListEqual(['', 'ç',  'ão',  ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[2].props, ONSET)
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS | DIPHTHONG)
 
         text = 'compacto'
         word = splitter.run(text)
@@ -304,8 +266,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'p', 'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'c', '',   ''], word.syllables[2].parts())
         self.assertListEqual(['', 't', 'o',  ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[2].props, ONSET)
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS)
 
         text = 'núpcias'
         word = splitter.run(text)
@@ -314,8 +274,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'p', '',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 'c', 'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', '',  'a', 's'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'erupção'
         word = splitter.run(text)
@@ -324,8 +282,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'r', 'u',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'p', '',   ''], word.syllables[2].parts())
         self.assertListEqual(['', 'ç', 'ão', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[2].props, ONSET)
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS | DIPHTHONG)
 
         text = 'eucalipto'
         word = splitter.run(text)
@@ -335,8 +291,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'l', 'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'p', '',   ''], word.syllables[3].parts())
         self.assertListEqual(['', 't', 'o',  ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[3].props, ONSET)
-        self.assertEqual(word.syllables[4].props, ONSET | NUCLEUS)
 
         text = 'observar'
         word = splitter.run(text)
@@ -345,8 +299,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'b', '',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 's', 'e', 'r'], word.syllables[2].parts())
         self.assertListEqual(['', 'v', 'a', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS | CODA)
 
         text = 'admitir'
         word = splitter.run(text)
@@ -355,8 +307,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'd', '',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 'm', 'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 't', 'i', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'advogado'
         word = splitter.run(text)
@@ -366,8 +316,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'v', 'o', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'g', 'a', ''], word.syllables[3].parts())
         self.assertListEqual(['', 'd', 'o', ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'ritmo'
         word = splitter.run(text)
@@ -375,8 +323,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'r', 'i', ''], word.syllables[0].parts())
         self.assertListEqual(['', 't', '',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'm', 'o', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'ignorar'
         word = splitter.run(text)
@@ -385,8 +331,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'g', '',   ''], word.syllables[1].parts())
         self.assertListEqual(['', 'n', 'o',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'r', 'a', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'óbvio'
         word = splitter.run(text)
@@ -395,8 +339,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'b', '',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'v', 'i', ''], word.syllables[2].parts())
         self.assertListEqual(['', '',  'o', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'psiquiatra'
         word = splitter.run(text)
@@ -406,8 +348,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'qu', 'i', ''], word.syllables[2].parts())
         self.assertListEqual(['', '',   'a', ''], word.syllables[3].parts())
         self.assertListEqual(['', 'tr', 'a', ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[0].props, ONSET)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS)
 
         text = 'submarino'
         word = splitter.run(text)
@@ -417,8 +357,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'm', 'a', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'r', 'i', ''], word.syllables[3].parts())
         self.assertListEqual(['', 'n', 'o', ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'tecnologia'
         word = splitter.run(text)
@@ -429,8 +367,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'l', 'o', ''], word.syllables[3].parts())
         self.assertListEqual(['', 'g', 'i', ''], word.syllables[4].parts())
         self.assertListEqual(['', '',  'a', ''], word.syllables[5].parts())
-        self.assertEqual(word.syllables[1].props, ONSET)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
         text = 'mnemônico'
         word = splitter.run(text)
@@ -440,8 +376,6 @@ class TestWordsWithOnset(TestCase):
         self.assertListEqual(['', 'm', 'ô', ''], word.syllables[2].parts())
         self.assertListEqual(['', 'n', 'i', ''], word.syllables[3].parts())
         self.assertListEqual(['', 'c', 'o', ''], word.syllables[4].parts())
-        self.assertEqual(word.syllables[0].props, ONSET)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS)
 
 
 

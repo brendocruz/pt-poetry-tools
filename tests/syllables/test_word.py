@@ -1,7 +1,6 @@
 from unittest import TestCase
 from src.syllables.classes import Syllable
 from src.words.classes import Word
-from src.syllables.flags import STRESS
 
 
 
@@ -64,7 +63,7 @@ class TestWordClass(TestCase):
 
     def test_stess(self):
         syllable_1 = Syllable(onset='l', nucleus='a', coda='')
-        syllable_2 = Syllable(onset='r', nucleus='a', coda='n', props=STRESS)
+        syllable_2 = Syllable(onset='r', nucleus='a', coda='n', stress=True)
         syllable_3 = Syllable(onset='j', nucleus='a', coda='')
         syllables  = [syllable_1, syllable_2, syllable_3]
         word       = Word(syllables)

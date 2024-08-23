@@ -1,5 +1,4 @@
 from src.words.classes import Word
-from src.syllables.flags import STRESS, NUCLEUS
 from src.stress.monosyllables import MONOSYLLABLES
 from src.stress.structs import *
 
@@ -18,14 +17,14 @@ class StressFinder():
         for index in range(wordlen - 1, -1, -1):
             # Sílabas "sem núcleo" são ignoradas, porque eles não inteferen
             # na tonicidade de uma palavra.
-            if not word.syllables[index].has(NUCLEUS):
+            if not word.syllables[index].has_nucleus():
                 continue
 
             # Checando a primeira letra do núcleo por acento. Mesmo nos casos
             # de ditongo, o acento que indica a tonicidade vai estar na 
             # primeira vogal do núcleo.
             if word.syllables[index].nucleus[0] in STRESSABLE_VOWELS:
-                word.syllables[index].set_props(STRESS)
+                word.syllables[index].stress = True
                 return index 
             count += 1
 
@@ -45,15 +44,15 @@ class StressFinder():
         # "ão" que torna as palavras oxítonas se confudem com a terminação "o"
         # que torna as palavras paroxítonas.
         if wordstr.endswith(PAROXYTONE_ENDS):
-            word.syllables[wordlen - 1].set_props(STRESS)
+            word.syllables[wordlen - 1].stress = True
             return wordlen - 1
 
         # Checando por paroxítonas.
         if wordstr.endswith(OXYTONE_ENDS):
-            if word.syllables[wordlen - 2].has(NUCLEUS):
-                word.syllables[wordlen - 2].set_props(STRESS)
+            if word.syllables[wordlen - 2].has_nucleus():
+                word.syllables[wordlen - 2].stress = True
                 return wordlen - 2
-            word.syllables[wordlen - 3].set_props(STRESS)
+            word.syllables[wordlen - 3].stress = True
             return wordlen - 3
 
         # Todas as palavras que não passarem nos testes acima são consideras
@@ -62,5 +61,5 @@ class StressFinder():
         # língua portuguesa. Além disso, paroxítonas é o padrão da língua, se
         # por acaso houver alguma palavra não segue o padrão, é bem provável
         # que ela seja paroxítonas.
-        word.syllables[wordlen - 1].set_props(STRESS)
+        word.syllables[wordlen - 1].stress = True
         return wordlen - 1

@@ -32,7 +32,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '|+saú|--de|')
+        self.assertEqual(output, '|+sa_ú|--de|')
 
 
 
@@ -74,7 +74,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '|poe|+sia|')
+        self.assertEqual(output, '|po_e|+si_a|')
 
 
 
@@ -102,7 +102,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '|proi|+bi|u|+tu|--do|')
+        self.assertEqual(output, '|pro_i|+bi|u|+tu|--do|')
 
 
 
@@ -116,7 +116,7 @@ class TestVerseGenerator(TestCase):
         generator = VerseGenerator(splitter, finder)
         output    = generator.run(verse)
 
-        self.assertEqual(output, '|+á|u|reo|+di|--a|')
+        self.assertEqual(output, '|+á|u|re_o|+di|--a|')
 
 
 
@@ -204,7 +204,7 @@ class TestVerseGenerator(TestCase):
 
 
 
-    def test_merge_syllables_diphthongs(self):
+    def test_merge_syllables_diphthong_hiato(self):
         text      = 'sei o seu segredo'
         splitter  = WordSplitter()
         finder    = StressFinder()
@@ -215,4 +215,32 @@ class TestVerseGenerator(TestCase):
         output    = generator.run(verse)
 
         desired   = '|+sei|o|+seu|se|+gre|--do|'
+        self.assertEqual(desired, output)
+
+
+    def test_merge_syllables_hiato_diphthong(self):
+        text      = 'estreou o vestido novo'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|es|tre|+ou|o|ves|+ti|do|+no|--vo|'
+        self.assertEqual(desired, output)
+
+
+    def test_merge_syllables_left_multiple_sources(self):
+        text      = 'mei^o a meio'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|+mei_o|a|+mei|--o|'
         self.assertEqual(desired, output)

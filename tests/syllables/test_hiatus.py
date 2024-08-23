@@ -1,6 +1,5 @@
 from unittest import TestCase
 from src.words.splitter import WordSplitter
-from src.syllables.flags import *
 
 
 
@@ -16,8 +15,6 @@ class TestWordsWithHiatus(TestCase):
         self.assertListEqual(['', 'r', 'a', ''], word.syllables[1].parts())
         self.assertListEqual(['', '',  'í', ''], word.syllables[2].parts())
         self.assertListEqual(['', 's', 'o', ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[2].props, NUCLEUS)
 
         text = 'cafeína'
         word = splitter.run(text)
@@ -75,8 +72,6 @@ class TestWordsWithHiatus(TestCase):
         self.assertListEqual(['', '',  'a',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'd', 'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', '',  'i', 'l'], word.syllables[2].parts())
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[2].props, NUCLEUS | CODA)
 
         text = 'ruim'
         word = splitter.run(text)
@@ -109,9 +104,6 @@ class TestWordsWithHiatus(TestCase):
         self.assertListEqual(['', 'r',  'a', ''], word.syllables[0].parts())
         self.assertListEqual(['', '',   'i', ''], word.syllables[1].parts())
         self.assertListEqual(['', 'nh', 'a', ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, NUCLEUS)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS | ONSET_DIGRAPH)
 
         text = 'coimbra'
         word = splitter.run(text)
@@ -154,8 +146,6 @@ class TestWordsWithHiatus(TestCase):
         self.assertListEqual(['', '',  'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 'l', 'i',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'z', 'a', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, NUCLEUS)
 
         text = 'vídeo'
         word = splitter.run(text)
@@ -226,5 +216,3 @@ class TestWordsWithHiatus(TestCase):
         self.assertListEqual(['', '',  'a',  ''], word.syllables[1].parts())
         self.assertListEqual(['', 't', 'i', 'n'], word.syllables[2].parts())
         self.assertListEqual(['', 'g', 'a',  ''], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, NUCLEUS)

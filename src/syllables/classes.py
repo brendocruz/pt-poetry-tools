@@ -1,29 +1,16 @@
 from dataclasses import dataclass, field
 from typing import Optional
-from src.syllables.flags import CODA, ONSET, STRESS
+from src.syllables.structs import ALL_ONSET_DIGRAPHS
 
 
 
 @dataclass
 class Syllable:
-    prefix:  str = field(default_factory=str)
-    onset:   str = field(default_factory=str)
-    nucleus: str = field(default_factory=str)
-    coda:    str = field(default_factory=str)
-    props:   int = field(default_factory=int)
-
-
-
-    def has(self, *props: int) -> bool:
-        for prop in props:
-            if not self.props & prop == prop:
-                return False
-        return True
-
-
-    def set_props(self, *props: int) -> None:
-        for prop in props:
-            self.props |= prop
+    prefix:   str = ''
+    onset:    str = ''
+    nucleus:  str = ''
+    coda:     str = ''
+    stress:  bool = False
 
 
     def merge(self, other: 'Syllable') -> Optional['Syllable']:
@@ -42,7 +29,8 @@ class Syllable:
         coda    = other.coda
 
         syllable = Syllable(prefix=prefix, onset=onset, nucleus=nucleus, coda=coda)
-        syllable.set_props(self.props, other.props)
+        if self.has_stress() or other.has_stress():
+            syllable.stress = True
         return syllable
 
 
@@ -56,6 +44,37 @@ class Syllable:
     
     def __len__(self) -> int:
         return len(self.text())
+
+    def has_onset(self) -> bool:
+        return self.onset != ''
+
+    def has_coda(self) -> bool:
+        return self.coda != ''
+
+    def has_nucleus(self) -> bool:
+        return self.nucleus != ''
+
+    def has_diphthong(self) -> bool:
+        return len(self.nucleus) > 1
+
+    def has_onset_digraph(self) -> bool:
+        return self.onset in ALL_ONSET_DIGRAPHS
+
+    def has_onset_cluster(self) -> bool:
+        if len(self.onset) <= 1:
+            return False
+        if self.onset in ALL_ONSET_DIGRAPHS:
+            return False
+        return True
+
+    def has_coda_cluster(self) -> bool:
+        return len(self.coda) > 1
+
+    def has_stress(self) -> bool:
+        return self.stress
+
+
+
 
 
 
@@ -71,7 +90,7 @@ class PoeticSyllable:
 
     def __post_init__(self):
         for syllable in self.sources:
-            if syllable.has(STRESS):
+            if syllable.has_stress():
                 self.stress = True
 
 
@@ -106,14 +125,14 @@ class PoeticSyllable:
             return True
         if not self.sources:
             return False
-        return self.sources[0].has(ONSET)
+        return self.sources[0].has_onset()
 
 
 
     def has_coda(self) -> bool:
         if not self.sources:
             return False
-        return self.sources[-1].has(CODA)
+        return self.sources[-1].has_coda()
 
 
 
@@ -124,7 +143,7 @@ class PoeticSyllable:
     
     def append(self, syllable: Syllable):
         self.sources.append(syllable)
-        if syllable.has(STRESS):
+        if syllable.has_stress():
             self.stress = True
 
 
@@ -132,5 +151,5 @@ class PoeticSyllable:
     def extend(self, other: 'PoeticSyllable'):
         self.sources.extend(other.sources)
         for syllable in other.sources:
-            if syllable.has(STRESS):
+            if syllable.has_stress():
                 self.stress = True

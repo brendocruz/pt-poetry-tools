@@ -3,7 +3,6 @@ from typing import Optional
 
 from src.syllables.classes import Syllable
 from src.syllables.structs import *
-import src.syllables.flags as f
 
 
 @dataclass
@@ -32,7 +31,6 @@ class SyllableSplitter:
         # Checando por apóstrofos. 
         if word[index] in SPECIAL_SYMBOLS:
             syllable.onset += word[index]
-            syllable.set_props(f.ONSET)
             return self.split_onset(word, index + 1, syllable)
 
 
@@ -45,7 +43,6 @@ class SyllableSplitter:
         if index + 3 < wordlen:
             if word[index:index + 3] in TRIGRAPH:
                 syllable.onset += word[index:index + 3]
-                syllable.set_props(f.ONSET, f.ONSET_DIGRAPH)
                 return self.split_onset(word, index + 3, syllable)
 
 
@@ -55,14 +52,12 @@ class SyllableSplitter:
             # Sequências que são sempre dígrafo.
             if word[index:index + 2] in DIGRAPHS_ALWAYS:
                 syllable.onset += word[index:index + 2]
-                syllable.set_props(f.ONSET, f.ONSET_DIGRAPH)
                 return self.split_onset(word, index + 2, syllable)
 
             # Sequências que são dígrafo às vezes. Não influencia no ataque,
             # mas estar separado, porque influencia na separação da coda.
             if word[index:index + 2] in DIGRAPHS_SOMETIMES_1:
                 syllable.onset += word[index:index + 2]
-                syllable.set_props(f.ONSET, f.ONSET_DIGRAPH)
                 return self.split_onset(word, index + 2, syllable)
 
             # Sequências que são dígrafo às vezes. Sendo unicamente o caso 
@@ -70,33 +65,27 @@ class SyllableSplitter:
             if word[index:index + 2] in DIGRAPHS_SOMETIMES_2:
                 if word[index + 2] in CONSONANTS or word[index + 2] in PREFIXES:
                     syllable.onset += word[index]
-                    syllable.set_props(f.ONSET)
                     return self.split_onset(word, index + 1, syllable)
                 syllable.onset += word[index:index + 2]
-                syllable.set_props(f.ONSET, f.ONSET_DIGRAPH)
                 return self.split_onset(word, index + 2, syllable)
 
             # Checando por encontros consonantais terminados por `r` e `l`.
             if word[index + 1] in ONSET_CLUSTER_END:
                 syllable.onset += word[index:index + 2]
-                syllable.set_props(f.ONSET, f.ONSET_CLUSTER)
                 return self.split_onset(word, index + 2, syllable)
 
             # Checando por encontros consonantais.
             if word[index:index + 2] in ONSET_CLUSTER:
                 if not self.split_onset_cluster:
                     syllable.onset += word[index:index + 2]
-                    syllable.set_props(f.ONSET, f.ONSET_CLUSTER)
                     return self.split_onset(word, index + 2, syllable)
                 else:
                     syllable.onset += word[index]
-                    syllable.set_props(f.ONSET)
                     return self.split_end(word, index + 1, syllable)
 
 
         # Se chegar até aqui, deve ser consoante.
         syllable.onset += word[index]
-        syllable.set_props(f.ONSET)
         return self.split_onset(word, index + 1, syllable)
 
 
@@ -111,14 +100,12 @@ class SyllableSplitter:
         # Checando por vogais no fim de palavra.
         if index + 1 == wordlen:
             syllable.nucleus = word[index]
-            syllable.set_props(f.NUCLEUS)
             return self.split_coda(word, index + 1, syllable)
 
 
         # Checando por vogais antes de consoante.
         if word[index + 1] in CONSONANTS or word[index + 1] in PREFIXES:
             syllable.nucleus = word[index]
-            syllable.set_props(f.NUCLEUS)
             return self.split_coda(word, index + 1, syllable)
 
 
@@ -127,26 +114,22 @@ class SyllableSplitter:
             # Checando por encontro vocálicos que são sempre ditongo.
             if word[index:index + 2] in DIPHTHONG_ALWAYS:
                 syllable.nucleus = word[index:index + 2]
-                syllable.set_props(f.NUCLEUS, f.DIPHTHONG)
                 return self.split_coda(word, index + 2, syllable)
 
             # Checando por hiatos formados pelo encontro na mesma vogal.
             if word[index:index + 2] in HIATUS_ALWAYS:
                 syllable.nucleus = word[index]
-                syllable.set_props(f.NUCLEUS)
                 return self.split_coda(word, index + 1, syllable)
 
             # Checando por encontros vocálicos que sempre são hiato.
             if word[index + 1] in HIATUS_ALWAYS_END:
                 syllable.nucleus = word[index]
-                syllable.set_props(f.NUCLEUS)
                 return self.split_coda(word, index + 1, syllable)
             
             # TODO: Conferir se isso está correto.
             if index + 3 == wordlen:
                 if word[index + 2] in HIATUS_ACCENT_STOP:
                     syllable.nucleus = word[index]
-                    syllable.set_props(f.NUCLEUS)
                     return self.split_coda(word, index + 1, syllable)
 
             # TODO: Conferir se isso está correto.
@@ -157,18 +140,16 @@ class SyllableSplitter:
                     if word[index + 3] in CONSONANTS:
                         if word[index + 2:index + 4] != 'lh':
                             syllable.nucleus = word[index]
-                            syllable.set_props(f.NUCLEUS)
                             return self.split_coda(word, index + 1, syllable)
 
         if word[index:index + 2] in DIPHTHONG_POSSIBLY:
             if self.is_diphthong(word, index):
                 syllable.nucleus = word[index:index + 2]
-                syllable.set_props(f.NUCLEUS, f.DIPHTHONG)
                 return self.split_coda(word, index + 2, syllable)
-            # else:
-            #     syllable.nucleus = word[index]
-            #     syllable.set_props(f.NUCLEUS)
-            #     return SyllableSplitterCoda(**vars(self)).run(word, index + 1, syllable)
+            else:
+                syllable.nucleus = word[index]
+                return self.split_coda(word, index + 1, syllable)
+
 
 
 
@@ -183,14 +164,12 @@ class SyllableSplitter:
         if index + 1 == wordlen:
             if word[index] in CODA_END:
                 syllable.coda = word[index]
-                syllable.set_props(f.CODA)
                 return self.split_end(word, index + 1, syllable)
 
         # Checando por encontro consonantal no final da palavra.
         if index + 2 == wordlen:
             if word[index:index + 2] in CODA_CLUSTER_END:
                 syllable.coda = word[index:index + 2]
-                syllable.set_props(f.CODA, f.CODA_CLUSTER)
                 return self.split_end(word, index + 2, syllable)
 
         # Checando por encontro consonantal no meio da palavra.
@@ -198,7 +177,6 @@ class SyllableSplitter:
             if word[index:index + 2] in CODA_CLUSTER_MIDDLE:
                 if word[index + 2] in CONSONANTS or word[index + 2] in PREFIXES:
                     syllable.coda = word[index:index + 2]
-                    syllable.set_props(f.CODA, f.CODA_CLUSTER)
                     return self.split_end(word, index + 2, syllable)
 
         if word[index:index + 2] in DIGRAPHS_ALWAYS:
@@ -211,18 +189,15 @@ class SyllableSplitter:
             if word[index + 2] in ALL_VOWELS:
                 if word[index + 2] in DIGRAPHS_PREVENT:
                     syllable.coda = word[index]
-                    syllable.set_props(f.CODA)
                     return self.split_end(word, index + 1, syllable)
                 return self.split_end(word, index, syllable)
             syllable.coda = word[index]
-            syllable.set_props(f.CODA)
             return self.split_end(word, index + 1, syllable)
 
 
         if word[index] in CODA_MIDDLE:
             if word[index + 1] in CONSONANTS or word[index + 1] in PREFIXES:
                 syllable.coda = word[index]
-                syllable.set_props(f.CODA)
                 return self.split_end(word, index + 1, syllable)
 
         return self.split_end(word, index, syllable)

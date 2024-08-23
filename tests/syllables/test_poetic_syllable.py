@@ -1,6 +1,5 @@
 from unittest import TestCase
 from src.syllables.classes import Syllable, PoeticSyllable
-from src.syllables.flags import ONSET, CODA, NUCLEUS, STRESS
 
 
 
@@ -61,7 +60,7 @@ class TestClassPoeticSyllable(TestCase):
         prefix   = Syllable(nucleus='a', coda='s')
         source_1 = Syllable(nucleus='a')
         source_2 = Syllable(nucleus='a')
-        source_3 = Syllable(nucleus='a', coda='s', props=STRESS)
+        source_3 = Syllable(nucleus='a', coda='s', stress=True)
         sources  = [source_1, source_2, source_3]
         syllable = PoeticSyllable(sources=sources, prefix_coda=prefix)
 
@@ -81,7 +80,6 @@ class TestClassPoeticSyllable(TestCase):
 
         syllable = PoeticSyllable()
         source_1 = Syllable(onset='c', nucleus='a')
-        source_1.set_props(ONSET, NUCLEUS)
         syllable.sources.append(source_1)
         self.assertTrue(syllable.has_onset())
 
@@ -93,7 +91,6 @@ class TestClassPoeticSyllable(TestCase):
 
         syllable = PoeticSyllable()
         source = Syllable(nucleus='o', coda='s')
-        source.set_props(NUCLEUS, CODA)
         syllable.sources.append(source)
         self.assertTrue(syllable.has_coda())
 
@@ -112,7 +109,7 @@ class TestClassPoeticSyllable(TestCase):
         source_1 = Syllable(onset='m', nucleus='u')
         source_2 = Syllable(nucleus='u')
         source_3 = Syllable(nucleus='u')
-        source_4 = Syllable(nucleus='u', coda='h', props=STRESS)
+        source_4 = Syllable(nucleus='u', coda='h', stress=True)
 
         syllable = PoeticSyllable(sources=[source_1, source_2])
 
@@ -128,7 +125,7 @@ class TestClassPoeticSyllable(TestCase):
         source_1 = Syllable(onset='m', nucleus='u')
         source_2 = Syllable(nucleus='u')
         source_3 = Syllable(nucleus='u')
-        source_4 = Syllable(nucleus='u', coda='h', props=STRESS)
+        source_4 = Syllable(nucleus='u', coda='h', stress=True)
 
         syllable_1 = PoeticSyllable(sources=[source_1, source_2])
         syllable_2 = PoeticSyllable(sources=[source_3, source_4])

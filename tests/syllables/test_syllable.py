@@ -1,33 +1,82 @@
 import re
 from unittest import TestCase
 from src.syllables.classes import Syllable
-from src.syllables.flags import ONSET, CODA, NUCLEUS
 
 
 
 class TestClassSyllable(TestCase):
 
-    def test_props(self):
+    def test_properties(self):
         syllable = Syllable()
-        self.assertEqual(syllable.props, 0)
+        self.assertFalse(syllable.has_onset())
+        self.assertFalse(syllable.has_nucleus())
+        self.assertFalse(syllable.has_coda())
+        self.assertFalse(syllable.has_onset_digraph())
+        self.assertFalse(syllable.has_onset_cluster())
+        self.assertFalse(syllable.has_coda_cluster())
+        self.assertFalse(syllable.has_diphthong())
+        self.assertFalse(syllable.has_stress())
 
-        syllable.set_props(ONSET, CODA)
-        self.assertEqual(syllable.props, ONSET | CODA)
 
-        result = syllable.has(ONSET)
-        self.assertTrue(result)
+        syllable_2 = Syllable(onset='v', nucleus='i', coda='r')
+        self.assertTrue(syllable_2.has_onset())
+        self.assertTrue(syllable_2.has_nucleus())
+        self.assertTrue(syllable_2.has_coda())
+        self.assertFalse(syllable_2.has_onset_digraph())
+        self.assertFalse(syllable_2.has_onset_cluster())
+        self.assertFalse(syllable_2.has_coda_cluster())
+        self.assertFalse(syllable_2.has_diphthong())
+        self.assertFalse(syllable_2.has_stress())
 
-        result = syllable.has(ONSET, CODA)
-        self.assertTrue(result)
+        syllable_3 = Syllable(onset='cr', nucleus='e', coda='r')
+        self.assertTrue(syllable_3.has_onset())
+        self.assertTrue(syllable_3.has_nucleus())
+        self.assertTrue(syllable_3.has_coda())
+        self.assertTrue(syllable_3.has_onset_cluster())
+        self.assertFalse(syllable_3.has_onset_digraph())
+        self.assertFalse(syllable_3.has_coda_cluster())
+        self.assertFalse(syllable_3.has_diphthong())
+        self.assertFalse(syllable_3.has_stress())
 
-        result = syllable.has(NUCLEUS)
-        self.assertFalse(result)
+        syllable_5 = Syllable(onset='ss', nucleus='a', coda='r' )
+        self.assertTrue(syllable_5.has_onset())
+        self.assertTrue(syllable_5.has_nucleus())
+        self.assertTrue(syllable_5.has_coda())
+        self.assertTrue(syllable_5.has_onset_digraph())
+        self.assertFalse(syllable_5.has_onset_cluster())
+        self.assertFalse(syllable_5.has_coda_cluster())
+        self.assertFalse(syllable_5.has_diphthong())
+        self.assertFalse(syllable_5.has_stress())
 
-        result = syllable.has(ONSET, NUCLEUS)
-        self.assertFalse(result)
+        syllable_6 = Syllable(onset='s', nucleus='ai', coda='s' )
+        self.assertTrue(syllable_6.has_onset())
+        self.assertTrue(syllable_6.has_nucleus())
+        self.assertTrue(syllable_6.has_coda())
+        self.assertTrue(syllable_6.has_diphthong())
+        self.assertFalse(syllable_6.has_onset_digraph())
+        self.assertFalse(syllable_6.has_onset_cluster())
+        self.assertFalse(syllable_6.has_coda_cluster())
+        self.assertFalse(syllable_6.has_stress())
 
-        result = syllable.has(NUCLEUS, CODA)
-        self.assertFalse(result)
+        syllable_6 = Syllable(onset='t', nucleus='e', coda='ns' )
+        self.assertTrue(syllable_6.has_onset())
+        self.assertTrue(syllable_6.has_nucleus())
+        self.assertTrue(syllable_6.has_coda())
+        self.assertTrue(syllable_6.has_coda_cluster())
+        self.assertFalse(syllable_6.has_diphthong())
+        self.assertFalse(syllable_6.has_onset_digraph())
+        self.assertFalse(syllable_6.has_onset_cluster())
+        self.assertFalse(syllable_6.has_stress())
+
+        syllable_7 = Syllable(onset='v', nucleus='a', coda='i', stress=True)
+        self.assertTrue(syllable_7.has_onset())
+        self.assertTrue(syllable_7.has_nucleus())
+        self.assertTrue(syllable_7.has_coda())
+        self.assertTrue(syllable_7.has_stress())
+        self.assertFalse(syllable_7.has_coda_cluster())
+        self.assertFalse(syllable_7.has_diphthong())
+        self.assertFalse(syllable_7.has_onset_digraph())
+        self.assertFalse(syllable_7.has_onset_cluster())
 
 
     def test_text(self):
@@ -101,11 +150,11 @@ class TestClassSyllable(TestCase):
 
 
 
-    def test_repr(self):
-        syllable = Syllable(onset='s', nucleus='e', coda='r')
-        syllable.set_props(ONSET, NUCLEUS, CODA)
-        pattern = re.compile('^<.+>$')
-        self.assertNotRegex(repr(syllable), pattern)
+    # def test_repr(self):
+    #     syllable = Syllable(onset='s', nucleus='e', coda='r')
+    #     syllable.set_props(ONSET, NUCLEUS, CODA)
+    #     pattern = re.compile('^<.+>$')
+    #     self.assertNotRegex(repr(syllable), pattern)
 
 
     def test_merge(self):

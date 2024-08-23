@@ -25,3 +25,6 @@ CODA_CLUSTER_MIDDLE  = ('ns')
 CODA_CLUSTER_END     = ('ns', 'ps')
 SPECIAL_SYMBOLS      = ("'", '’')
 PREFIXES             = ('-')
+
+ALL_ONSET_DIGRAPHS   = ('lh', 'nh', 'rr', 'ss', 'sç', 'ch', 
+                        'qu', 'xs', 'gd', 'xc', 'sc', 'gu')

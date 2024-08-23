@@ -1,7 +1,6 @@
 from typing import Optional
 from src.utils.mixins import ReprMixin
 from src.syllables.classes import Syllable
-from src.syllables.flags import STRESS
 
 
 
@@ -22,7 +21,7 @@ class Word(ReprMixin):
 
     def stressed(self) -> int:
         for index, syllable in enumerate(self.syllables):
-            if syllable.has(STRESS):
+            if syllable.has_stress():
                 return index
         return -1
 

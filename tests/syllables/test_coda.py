@@ -1,5 +1,4 @@
 from unittest import TestCase
-from src.syllables.flags import *
 from src.words.splitter import WordSplitter
 
 
@@ -14,8 +13,6 @@ class TestWordsWithCoda(TestCase):
         self.assertEqual(2, len(word.syllables))
         self.assertListEqual(['', 'f', 'a',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'z', 'e', 'r'], word.syllables[1].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | CODA)
 
         text = 'certo'
         word = splitter.run(text)
@@ -46,10 +43,6 @@ class TestWordsWithCoda(TestCase):
         self.assertListEqual(['', 'c', 'a', 'r'], word.syllables[1].parts())
         self.assertListEqual(['', 'c', 'e',  ''], word.syllables[2].parts())
         self.assertListEqual(['', 'r', 'a', 'r'], word.syllables[3].parts())
-        self.assertEqual(word.syllables[0].props, NUCLEUS | CODA)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | CODA)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[3].props, ONSET | NUCLEUS | CODA)
 
         text = 'excluir'
         word = splitter.run(text)
@@ -83,10 +76,6 @@ class TestWordsWithCoda(TestCase):
         self.assertListEqual(['', 'tr', 'a', 'ns'], word.syllables[0].parts())
         self.assertListEqual(['', 'p',  'o',  'r'], word.syllables[1].parts())
         self.assertListEqual(['', 't',  'e',   ''], word.syllables[2].parts())
-        self.assertEqual(word.syllables[0].props, 
-                         ONSET | NUCLEUS | CODA | CODA_CLUSTER | ONSET_CLUSTER)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | CODA)
-        self.assertEqual(word.syllables[2].props, ONSET | NUCLEUS)
 
 
 
@@ -99,8 +88,6 @@ class TestWordsWithCoda(TestCase):
         self.assertEqual(2, len(word.syllables))
         self.assertListEqual(['', 'b', 'í',   ''], word.syllables[0].parts())
         self.assertListEqual(['', 'c', 'e', 'ps'], word.syllables[1].parts())
-        self.assertEqual(word.syllables[0].props, ONSET | NUCLEUS)
-        self.assertEqual(word.syllables[1].props, ONSET | NUCLEUS | CODA | CODA_CLUSTER)
 
         text = 'hífens'
         word = splitter.run(text)
