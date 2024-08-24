@@ -93,13 +93,18 @@ class SyllableSplitter:
         return self.split_onset(word, index + 1, syllable)
 
 
-
     def is_diphthong(self, __word__: str, __index__: int) -> bool:
         return True
 
 
     def split_nucleus(self, word: str, index: int, syllable: Syllable) -> tuple[Syllable, int]:
         wordlen  = len(word)
+
+
+        # Checando pelo caso especial da palavra "ao".
+        if word == 'ao':
+            syllable.nucleus = word
+            return self.split_coda(word, index + 2, syllable)
 
 
         # Checando por vogais no fim de palavra.
@@ -151,9 +156,9 @@ class SyllableSplitter:
             if self.is_diphthong(word, index):
                 syllable.nucleus = word[index:index + 2]
                 return self.split_coda(word, index + 2, syllable)
-            else:
-                syllable.nucleus = word[index]
-                return self.split_coda(word, index + 1, syllable)
+            # else:
+            #     syllable.nucleus = word[index]
+            #     return self.split_coda(word, index + 1, syllable)
 
         return self.split_coda(word, index, syllable)
 

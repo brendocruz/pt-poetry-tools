@@ -81,3 +81,13 @@ class TestWordsWithDiphthongs(TestCase):
         self.assertEqual(2, len(word.syllables))
         self.assertListEqual(['', 'h', 'e',  ''], word.syllables[0].parts())
         self.assertListEqual(['', 'r', 'ói', ''], word.syllables[1].parts())
+
+
+
+    def test_dipthong_always(self):
+        splitter = WordSplitter()
+
+        text = 'ao'
+        word = splitter.run(text)
+        self.assertEqual(1, len(word.syllables))
+        self.assertListEqual(['', '', 'ao',  ''], word.syllables[0].parts())
