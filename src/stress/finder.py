@@ -35,6 +35,8 @@ class StressFinder():
                 break
 
         wordstr = word.text()
+        if wordstr[0] == '-':
+            wordstr = wordstr[1:]
 
         # Checando por monossílabas átonas.
         if wordstr in MONOSYLLABLES:

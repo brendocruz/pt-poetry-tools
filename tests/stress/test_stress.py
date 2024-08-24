@@ -213,6 +213,12 @@ class TestWordsWithOnset(TestCase):
         self.assertEqual(-1, index)
         self.assertFalse(word.syllables[index].has_stress())
 
+        word = splitter.run('-ma')
+        index = finder.run(word)
+        self.assertEqual(-1, index)
+        self.assertFalse(word.syllables[index].has_stress())
+
+
 
     def test_monosyllable_stressed_no_accent(self):
         finder = StressFinder()
