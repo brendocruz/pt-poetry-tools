@@ -6,6 +6,16 @@ from src.stress.finder import StressFinder
 
 class TestWordsWithOnset(TestCase):
 
+    def test_empty(self):
+        finder = StressFinder()
+        splitter = WordSplitter()
+
+        word = splitter.run('')
+        index = finder.run(word)
+        self.assertEqual(-1, index)
+
+
+
     def test_proparoxytones_accent(self):
         finder = StressFinder()
         splitter = WordSplitter()

@@ -12,6 +12,9 @@ class StressFinder():
     def run(self, word: Word) -> int:
         wordlen = len(word.syllables)
 
+        if wordlen == 0:
+            return -1
+
         count = 0
         # Checando por acentos que indiquem a sílaba tônica da palavra.
         for index in range(wordlen - 1, -1, -1):
