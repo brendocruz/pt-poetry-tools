@@ -318,3 +318,46 @@ class TestVerseGenerator(TestCase):
 
         desired   = '|+ten|s_o_a|+mor|'
         self.assertEqual(desired, output)
+
+
+
+    def test_words_untied(self):
+        text      = 'amarelo / azul'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|a|ma|+re|lo|a|+zul|'
+        self.assertEqual(desired, output)
+
+
+    def test_words_tied(self):
+        text      = 'amarelo * azul'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|a|ma|+re|lo_a|+zul|'
+        self.assertEqual(desired, output)
+
+
+    def test_words_tied_and_untied(self):
+        text      = '|la|ran|ja| * e / [a|zul]'
+        splitter  = WordSplitter()
+        finder    = StressFinder()
+        scanner   = VerseScanner(text)
+        parser    = VerseParser(scanner)
+        verse     = parser.parse()
+        generator = VerseGenerator(splitter, finder)
+        output    = generator.run(verse)
+
+        desired   = '|la|ran|ja_e|a|+zul|'
+        self.assertEqual(desired, output)

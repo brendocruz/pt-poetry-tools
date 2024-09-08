@@ -5,7 +5,6 @@ from src.words.classes import Word
 from src.syllables.classes import PoeticSyllable, Syllable
 from src.words.splitter import WordSplitter
 from src.stress.finder import StressFinder
-from pprint import pprint
 
 
 class VerseGenerator:
@@ -15,6 +14,61 @@ class VerseGenerator:
     def __init__(self, splitter: WordSplitter, finder: StressFinder):
         self.splitter = splitter
         self.finder = finder
+
+
+    def generate_tied_words(self, words: WordsTied) -> list[PoeticSyllable]:
+        all_syllables: list[list[PoeticSyllable]] = []
+        for child in words.children:
+            syllables = self.generate_phrase(child)
+            all_syllables.append(syllables)
+
+        left_word  = all_syllables[0]
+        right_word = all_syllables[1]
+        left_edge  = left_word.pop(-1)
+        right_edge = right_word.pop(0)
+
+        joined_words: list[PoeticSyllable] = []
+        if not left_edge.has_coda() and not right_edge.has_onset():
+            left_edge.extend(right_edge)
+            joined_words.extend(left_word)
+            joined_words.append(left_edge)
+            joined_words.extend(right_word)
+            return joined_words
+
+        joined_words.extend(left_word)
+        joined_words.append(left_edge)
+        joined_words.append(right_edge)
+        joined_words.extend(right_word)
+        return joined_words
+
+
+
+    def generate_untied_words(self, words: WordsUntied) -> list[PoeticSyllable]:
+        all_syllables: list[list[PoeticSyllable]] = []
+        for child in words.children:
+            syllables = self.generate_phrase(child)
+            all_syllables.append(syllables)
+
+        left_word  = all_syllables[0]
+        right_word = all_syllables[1]
+
+        left_word[-1].mergeable = False
+        right_word[0].mergeable = False
+
+        joined_words: list[PoeticSyllable] = []
+        joined_words.extend(left_word)
+        joined_words.extend(right_word)
+        return joined_words
+
+
+
+    def generate_full_word(self, full_word: Phrase) -> list[PoeticSyllable]:
+        poetic_syllables: list[PoeticSyllable] = []
+        if isinstance(full_word, WordsTied):
+            poetic_syllables = self.generate_tied_words(full_word)
+        elif isinstance(full_word, WordsUntied):
+            poetic_syllables = self.generate_untied_words(full_word)
+        return poetic_syllables
 
 
 
@@ -276,6 +330,38 @@ class VerseGenerator:
 
 
 
+    def generate_phrase(self, phrase: Phrase) -> list[PoeticSyllable]:
+        if isinstance(phrase, String):
+            syllables = self.generate_string(phrase)
+            return syllables
+        if isinstance(phrase, ManualWord):
+            syllables = self.generate_manual_word(phrase)
+            return syllables
+        if isinstance(phrase, PiecesTied):
+            syllables = self.generate_auto_word(phrase)
+            return syllables
+        if isinstance(phrase, PiecesUntied):
+            syllables = self.generate_auto_word(phrase)
+            return syllables
+        if isinstance(phrase, StressAll):
+            syllables = self.generate_all_stressed(phrase)
+            return syllables
+        if isinstance(phrase, StressNone):
+            syllables = self.generate_all_unstressed(phrase)
+            return syllables
+        if isinstance(phrase, FragmentWord):
+            syllables = self.generate_fragment_word(phrase)
+            return syllables
+        if isinstance(phrase, WordsTied):
+            syllables = self.generate_full_word(phrase)
+            return syllables
+        if isinstance(phrase, WordsUntied):
+            syllables = self.generate_full_word(phrase)
+            return syllables
+        return []
+
+
+
     def generate_verse(self, verse: Verse) -> list[PoeticSyllable]:
         all_syllables: list[PoeticSyllable] = []
         for phrase in verse.children:
@@ -298,12 +384,22 @@ class VerseGenerator:
             if isinstance(phrase, StressAll):
                 syllables = self.generate_all_stressed(phrase)
                 all_syllables.extend(syllables)
+                continue
             if isinstance(phrase, StressNone):
                 syllables = self.generate_all_unstressed(phrase)
                 all_syllables.extend(syllables)
+                continue
             if isinstance(phrase, FragmentWord):
                 syllables = self.generate_fragment_word(phrase)
                 all_syllables.extend(syllables)
+            if isinstance(phrase, WordsTied):
+                syllables = self.generate_full_word(phrase)
+                all_syllables.extend(syllables)
+                continue
+            if isinstance(phrase, WordsUntied):
+                syllables = self.generate_full_word(phrase)
+                all_syllables.extend(syllables)
+                continue
         return all_syllables
 
 
